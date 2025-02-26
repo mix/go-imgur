@@ -9,66 +9,66 @@ import (
 )
 
 func printRate(client *imgur.Client) {
-	client.Log.Infof("*** RATE LIMIT ***\n")
+	client.Log.Info().Msg("*** RATE LIMIT ***")
 	rl, err := client.GetRateLimit()
 	if err != nil {
-		client.Log.Errorf("Error in GetRateLimit: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetRateLimit:")
 		return
 	}
-	client.Log.Infof("%v\n", *rl)
+	client.Log.Info().Msg(fmt.Sprintf("%v", *rl))
 }
 
 func printImage(client *imgur.Client, image *string) {
-	client.Log.Infof("*** IMAGE ***\n")
+	client.Log.Info().Msg("*** IMAGE ***")
 	img, _, err := client.GetImageInfo(*image)
 	if err != nil {
-		client.Log.Errorf("Error in GetImageInfo: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetImageInfo:")
 		return
 	}
-	client.Log.Infof("%v\n", img)
+	client.Log.Info().Msg(fmt.Sprintf("%v\n", img))
 }
 
 func printAlbum(client *imgur.Client, album *string) {
-	client.Log.Infof("*** ALBUM ***\n")
+	client.Log.Info().Msg("*** ALBUM ***")
 	img, _, err := client.GetAlbumInfo(*album)
 	if err != nil {
-		client.Log.Errorf("Error in GetAlbumInfo: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetAlbumInfo:")
 		return
 	}
-	client.Log.Infof("%v\n", img)
+	client.Log.Info().Msg(fmt.Sprintf("%v\n", img))
 }
 
 func printGImage(client *imgur.Client, gimage *string) {
-	client.Log.Infof("*** GALLERY IMAGE ***\n")
+	client.Log.Info().Msg("*** GALLERY IMAGE ***")
 	img, _, err := client.GetGalleryImageInfo(*gimage)
 	if err != nil {
-		client.Log.Errorf("Error in GetGalleryImageInfo: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetGalleryImageInfo:")
 		return
 	}
-	client.Log.Infof("%v\n", img)
+	client.Log.Info().Msg(fmt.Sprintf("%v\n", img))
 }
 
 func printGAlbum(client *imgur.Client, galbum *string) {
-	client.Log.Infof("*** GALLERY ALBUM ***\n")
+	client.Log.Info().Msg("*** GALLERY ALBUM ***")
 	img, _, err := client.GetGalleryAlbumInfo(*galbum)
 	if err != nil {
-		client.Log.Errorf("Error in GetGalleryAlbumInfo: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetGalleryAlbumInfo:")
 		return
 	}
-	client.Log.Infof("%v\n", img)
+	client.Log.Info().Msg(fmt.Sprintf("%v\n", img))
 }
 
 func printURL(client *imgur.Client, url *string) {
-	client.Log.Infof("*** URL ***\n")
+	client.Log.Info().Msg("*** URL ***\n")
 	img, _, err := client.GetInfoFromURL(*url)
 	if err != nil {
-		client.Log.Errorf("Error in GetInfoFromURL: %v\n", err)
+		client.Log.Error().Err(err).Msg("Error in GetInfoFromURL:")
 		return
 	}
-	client.Log.Infof("Image: %+v\n", img.Image)
-	client.Log.Infof("Album: %+v\n", img.Album)
-	client.Log.Infof("GImage: %+v\n", img.GImage)
-	client.Log.Infof("GAlbum: %+v\n", img.GAlbum)
+	client.Log.Info().Msg(fmt.Sprintf("Image: %+v\n", img.Image))
+	client.Log.Info().Msg(fmt.Sprintf("Album: %+v\n", img.Album))
+	client.Log.Info().Msg(fmt.Sprintf("GImage: %+v\n", img.GImage))
+	client.Log.Info().Msg(fmt.Sprintf("GAlbum: %+v\n", img.GAlbum))
 }
 
 func main() {

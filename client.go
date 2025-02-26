@@ -1,10 +1,11 @@
 package imgur
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
+	"os"
 
-	"github.com/koffeinsource/go-klogger"
+	"github.com/rs/zerolog"
 )
 
 // ClientAccount describe authontification
@@ -15,7 +16,7 @@ type ClientAccount struct {
 
 // Client used to for go-imgur
 type Client struct {
-	Log          klogger.KLogger
+	Log          zerolog.Logger
 	httpClient   *http.Client
 	imgurAccount ClientAccount
 	rapidAPIKey  string
@@ -23,16 +24,16 @@ type Client struct {
 
 // NewClient simply creates an imgur client. RapidAPIKEY is "" if you are using the free API.
 func NewClient(httpClient *http.Client, clientID string, rapidAPIKey string) (*Client, error) {
-	logger := new(klogger.CLILogger)
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 	if len(clientID) == 0 {
 		msg := "imgur client ID is empty"
-		logger.Errorf(msg)
-		return nil, fmt.Errorf(msg)
+		logger.Error().Msg(msg)
+		return nil, errors.New(msg)
 	}
 
 	if len(rapidAPIKey) == 0 {
-		logger.Infof("rapid api key is empty")
+		logger.Info().Msg("rapid api key is empty")
 	}
 
 	return &Client{

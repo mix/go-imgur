@@ -1,4 +1,4 @@
-FROM golang:1.19.6-alpine AS base
+FROM golang:1.23.6-alpine AS base
 
 RUN apk update && apk add make bash curl build-base
 

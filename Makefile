@@ -1,4 +1,4 @@
-DOCKER_COMPOSE_TEST := docker-compose -f dev/test.yml
+DOCKER_COMPOSE_TEST := docker compose -f dev/test.yml
 TEST_SERVICE_NAME := test_goimgur
 
 ifdef TEST_RUN

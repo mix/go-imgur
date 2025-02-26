@@ -20,7 +20,6 @@ func TestRateLimitImgurSimulated(t *testing.T) {
 	}
 
 	if rl.ClientLimit != 40 || rl.UserLimit != 10 || rl.UserRemaining != 2 || rl.ClientRemaining != 5 {
-		client.Log.Debugf("Found ClientLimit: %v and UserLimit: %v", rl.ClientLimit, rl.UserLimit)
 		t.Error("Client/User limits are wrong. Probably something broken. Or IMGUR changed their limits. Or you are not using a free account for testing. Sorry. No real good way to test this.")
 	}
 }
@@ -46,7 +45,6 @@ func TestRateLimitRealRapidAPI(t *testing.T) {
 
 	// There seem to be not rate limites when using the paid API
 	if rl.ClientLimit != 0 || rl.UserLimit != 0 {
-		client.Log.Debugf("Found ClientLimit: %v and UserLimit: %v", rl.ClientLimit, rl.UserLimit)
 		t.Error("Client/User limits are wrong. Probably something broken. Or IMGUR changed their limits. Or you are using a free account for testing. Sorry. No real good way to test this.")
 	}
 }
@@ -67,7 +65,6 @@ func TestRateLimitRealImgur(t *testing.T) {
 	}
 
 	if rl.ClientLimit != 12500 || rl.UserLimit != 500 {
-		client.Log.Debugf("Found ClientLimit: %v and UserLimit: %v", rl.ClientLimit, rl.UserLimit)
 		t.Error("Client/User limits are wrong. Probably something broken. Or IMGUR changed their limits. Or you are not using a free account for testing. Sorry. No real good way to test this.")
 	}
 }
