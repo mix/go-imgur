@@ -3,8 +3,9 @@ package imgur
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -29,14 +30,14 @@ type GenerateAccessTokenResponse struct {
 func (c *Client) RefreshAccessToken(refreshToken string, clientSecret string) (string, error) {
 	if len(refreshToken) == 0 {
 		msg := "Refresh token is empty"
-		c.Log.Errorf(msg)
-		return "", fmt.Errorf(msg)
+		c.Log.Error().Msg(msg)
+		return "", errors.New(msg)
 	}
 
 	if len(clientSecret) == 0 {
 		msg := "Client secret is empty"
-		c.Log.Errorf(msg)
-		return "", fmt.Errorf(msg)
+		c.Log.Error().Msg(msg)
+		return "", errors.New(msg)
 	}
 
 	rawBody, err := json.Marshal(
@@ -47,30 +48,30 @@ func (c *Client) RefreshAccessToken(refreshToken string, clientSecret string) (s
 			GrandType:    "refresh_token",
 		})
 	if err != nil {
-		c.Log.Errorf("Failed to marshal GenerateAccessToken. %v", err)
+		c.Log.Error().Err(err).Msg("Failed to marshal GenerateAccessToken")
 		return "", err
 	}
 
-	c.Log.Debugf("Prepared body %v", string(rawBody))
+	c.Log.Debug().Msg(fmt.Sprintf("Prepared body %v", string(rawBody)))
 
 	url := apiEndpointGenerateAccessToken
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(rawBody))
 	if err != nil {
-		c.Log.Errorf("Failed to create new request for refresh access token. %v", err)
+		c.Log.Error().Err(err).Msg("Failed to create new request for refresh access token")
 		return "", err
 	}
 
-	c.Log.Infof("Sending request to refresh access token")
+	c.Log.Info().Msg("Sending request to refresh access token")
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		c.Log.Errorf("HTTP request was failed. %v", err)
+		c.Log.Error().Err(err).Msg("HTTP request was failed")
 		return "", err
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		c.Log.Errorf("Reading response body was failed. %v", err)
+		c.Log.Error().Err(err).Msg("Reading response body was failed. %v")
 		return "", err
 	}
 
@@ -78,12 +79,12 @@ func (c *Client) RefreshAccessToken(refreshToken string, clientSecret string) (s
 	decoder := json.NewDecoder(bytes.NewReader(body))
 	decoder.UseNumber()
 	if err = decoder.Decode(&response); err != nil {
-		c.Log.Errorf("Decoding response was failed. %v", err)
+		c.Log.Error().Err(err).Msg("Decoding response was failed")
 		return "", err
 	}
 
-	c.Log.Infof("Token was success updated and it will be relevant within next %v seconds", response.ExpiresIn)
-	c.Log.Debugf("New token: %v New refresh token: %v", response.AccessToken, response.RefreshToken)
+	c.Log.Info().Msg(fmt.Sprintf("Token was success updated and it will be relevant within next %v seconds", response.ExpiresIn))
+	c.Log.Debug().Msg(fmt.Sprintf("New token: %v New refresh token: %v", response.AccessToken, response.RefreshToken))
 
 	c.imgurAccount.accessToken = response.AccessToken
 	return response.RefreshToken, nil

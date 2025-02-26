@@ -15,7 +15,9 @@ import (
 // UploadImage uploads the image to imgur
 // image                Can be a binary file, base64 data, or a URL for an image. (up to 10MB)
 // album       optional The id of the album you want to add the image to.
-//                      For anonymous albums, album should be the deletehash that is returned at creation.
+//
+//	For anonymous albums, album should be the deletehash that is returned at creation.
+//
 // dtype                The type of the file that's being sent; file, base64 or URL
 // title       optional The title of the image.
 // description optional The description of the image.
@@ -32,7 +34,7 @@ func (client *Client) UploadImage(image []byte, album string, dtype string, titl
 
 	URL := client.createAPIURL("image")
 	req, err := http.NewRequest("POST", URL, bytes.NewBufferString(form.Encode()))
-	client.Log.Debugf("Posting to URL %v\n", URL)
+	client.Log.Debug().Msg(fmt.Sprintf("Posting to URL %v\n", URL))
 	if err != nil {
 		return nil, -1, errors.New("Could create request for " + URL + " - " + err.Error())
 	}
@@ -93,7 +95,7 @@ func createUploadForm(image []byte, album string, dtype string, title string, de
 
 // UploadImageFromFile uploads a file given by the filename string to imgur.
 func (client *Client) UploadImageFromFile(filename string, album string, title string, description string) (*ImageInfo, int, error) {
-	client.Log.Infof("*** IMAGE UPLOAD ***\n")
+	client.Log.Info().Msg("*** IMAGE UPLOAD ***")
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, 500, fmt.Errorf("Could not open file %v - Error: %v", filename, err)

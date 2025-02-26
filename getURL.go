@@ -2,6 +2,7 @@ package imgur
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -20,7 +21,7 @@ func (client *Client) createAPIURL(u string) string {
 // - error in case something broke
 func (client *Client) getURL(URL string) (string, int, *RateLimit, error) {
 	URL = client.createAPIURL(URL)
-	client.Log.Infof("Requesting URL %v\n", URL)
+	client.Log.Info().Msg(fmt.Sprintf("Requesting URL %v\n", URL))
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		return "", -1, nil, errors.New("Could not create request for " + URL + " - " + err.Error())
@@ -55,7 +56,7 @@ func (client *Client) getURL(URL string) (string, int, *RateLimit, error) {
 	// Get RateLimit headers
 	rl, err := extractRateLimits(res.Header)
 	if err != nil {
-		client.Log.Infof("Problem with extracting rate limits: %v", err)
+		client.Log.Info().Err(err).Msg("Problem with extracting rate limits")
 	}
 
 	return string(body[:]), res.StatusCode, rl, nil
